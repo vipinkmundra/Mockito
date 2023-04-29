@@ -98,6 +98,7 @@ class BeerControllerTest {
 
         verify(beerService).updateBeerById(any(UUID.class),any(Beer.class));
     }
+    
 
     @BeforeEach
     void setUp() {
@@ -149,4 +150,15 @@ class BeerControllerTest {
                 .andExpect(jsonPath("$.id",is(testBeer.getId().toString())))
                 .andExpect(jsonPath("$.beerName",is(testBeer.getBeerName())));
     }
+    
+    //Exception Handling
+
+    @Test
+    void getBearByIdNotFound() throws Exception{
+        given(beerService.getBeerById(any(UUID.class))).willThrow(NotFoundException.class);
+
+        mockMvc.perform(get(BeerController.BEER_PATH_ID,UUID.randomUUID()))
+                .andExpect(status().isNotFound());
+    }
+
 }
